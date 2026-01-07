@@ -279,7 +279,7 @@ object Game_screen {
   } //on veux que la hauteur soit impair
 
   val gameWindow: FunGraphics = new FunGraphics(WIDTH * Display.pixel_value, HEIGHT * Display.pixel_value, "Game 2025")
-  gameWindow.syncGameLogic(8)
+  gameWindow.syncGameLogic(60)
 }
 
 object MainGame extends App {
