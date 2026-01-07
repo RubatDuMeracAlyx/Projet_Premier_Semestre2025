@@ -65,10 +65,10 @@ class Button(val x: Int,
 
 object Display {
   val pixel_value: Int = setting_screen.zoom
-  val wallFile = new GraphicsBitmap("/res/wall 16x16.jpg")
-  val solFile = new GraphicsBitmap("/res/sol 16x16.jpg")
-  val persFile = new GraphicsBitmap("/res/perso 16x16.jpg")
-  val rocFile = new GraphicsBitmap("/res/end_flag 16x16.jpg")//place holder
+  val wallFile = new GraphicsBitmap("/res/bloc.png")
+  val solFile = new GraphicsBitmap("/res/sol.png")
+  val persFile = new GraphicsBitmap("/res/joueur.png")
+  val rocFile = new GraphicsBitmap("/res/bloc (1).png")//place holder
 
   def blit(grid: Array[Array[Int]]): Unit = {
     Game_screen.gameWindow.frontBuffer.synchronized {
@@ -192,9 +192,9 @@ object setting_screen {
   val START_BUTTON: Button = new Button(475, 320, 115, 40)
 
   // --- VALEURS ---
-  var zoom = 28 // taille des tiles en pixels
-  var largeur = 10 // nb de cases en largeur
-  var hauteur = 10 // nb de cases en hauteur
+  var zoom = 45 // taille des tiles en pixels
+  var largeur = 15 // nb de cases en largeur
+  var hauteur = 15 // nb de cases en hauteur
 
   // Méthode à appeler depuis ton main : setting_screen.run()
   def run(): Unit = {
@@ -260,7 +260,7 @@ object setting_screen {
       START_BUTTON.text = "START"
 
       // Stabilise le framerate (~FPS)
-      settingWindow.syncGameLogic(60)
+      settingWindow.syncGameLogic(30)
     }
 
     // Quand tu sors de la boucle, tu as les valeurs choisies
@@ -322,6 +322,7 @@ object MainGame extends App {
   }
   var game: Array[Array[Int]] = Motor.generategame(Game_screen.WIDTH, Game_screen.HEIGHT)
   while(true){
+    Thread.sleep(20)
     Player1.Nextpos
     Player2.Nextpos
     Display.blit(game)
