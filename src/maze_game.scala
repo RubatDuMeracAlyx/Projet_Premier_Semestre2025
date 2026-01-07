@@ -69,6 +69,8 @@ object Display {
   val solFile = new GraphicsBitmap("/res/sol.png")
   val persFile = new GraphicsBitmap("/res/joueur.png")
   val rocFile = new GraphicsBitmap("/res/bloc (1).png")
+  val bombeFile = new GraphicsBitmap("/res/bomb.png")
+  val boomFile = new GraphicsBitmap("/res/explosion.png")
 
   def blit(grid: Array[Array[Int]]): Unit = {
     Game_screen.gameWindow.frontBuffer.synchronized {
@@ -90,6 +92,12 @@ object Display {
         if (y == 5) { // 5 in the grid is the player2
           Game_screen.gameWindow.drawTransformedPicture(xPos * pixel_value + pixel_value / 2, yPos * pixel_value + pixel_value / 2, 0, pixel_value / 16, persFile)
         }
+        if (y == 6) { // 6 in the grid is a Bomb
+          Game_screen.gameWindow.drawTransformedPicture(xPos * pixel_value + pixel_value / 2, yPos * pixel_value + pixel_value / 2, 0, pixel_value / 16, bombeFile)
+        }
+        if (y == 7) { // 4 in the grid is an explosion
+          Game_screen.gameWindow.drawTransformedPicture(xPos * pixel_value + pixel_value / 2, yPos * pixel_value + pixel_value / 2, 0, pixel_value / 16, boomFile)
+        }
       }
     }
   }
@@ -98,17 +106,17 @@ object Display {
 object Motor {
   def generategame(width: Int, height: Int, visualize: Boolean = false): Array[Array[Int]] = {
     var game: Array[Array[Int]] = Array.ofDim[Int](width, height)
-    for(x<-0 until game.length){
-      for(y<-0 until game(x).length){
-        if ((x==0)||(y==0)||(x==game.length-1)||(y==game(x).length-1)){//contours
-          game(x)(y)=1
+    for (x <- 0 until game.length) {
+      for (y <- 0 until game(x).length) {
+        if ((x == 0) || (y == 0) || (x == game.length - 1) || (y == game(x).length - 1)) { //contours
+          game(x)(y) = 1
         }
-        if ((x%2==0)&&(y%2==0)){//pilliers
-          game(x)(y)=1
+        if ((x % 2 == 0) && (y % 2 == 0)) { //pilliers
+          game(x)(y) = 1
         }
-        if (game(x)(y)==0){
-          if (math.random < 0.75){
-            game(x)(y)=2
+        if (game(x)(y) == 0) {
+          if (math.random < 0.75) {
+            game(x)(y) = 2
           }
         }
       }
@@ -122,26 +130,54 @@ object Player1 {
   //spawn du joueur
   var x: Int = 1
   var y: Int = 1
-  MainGame.game(Player1.x+1)(Player1.y) = 0
-  MainGame.game(Player1.x)(Player1.y+1) = 0
+  MainGame.game(x + 1)(y) = 0
+  MainGame.game(x)(y + 1) = 0
 
   def Nextpos(): Unit = {
-    MainGame.game(Player1.x)(Player1.y) = 4
+    MainGame.game(x)(y) = 4
     Display.blit(MainGame.game)
   }
 }
+
 object Player2 {
   //spawn du joueur
-  var x: Int = Game_screen.WIDTH -2
-  var y: Int = Game_screen.HEIGHT -2
-  MainGame.game(Player2.x-1)(Player2.y) = 0
-  MainGame.game(Player2.x)(Player2.y-1) = 0
+  var x: Int = Game_screen.WIDTH - 2
+  var y: Int = Game_screen.HEIGHT - 2
+  MainGame.game(Player2.x - 1)(Player2.y) = 0
+  MainGame.game(Player2.x)(Player2.y - 1) = 0
 
   def Nextpos(): Unit = {
     MainGame.game(Player2.x)(Player2.y) = 5
     Display.blit(MainGame.game)
   }
 }
+
+object Bombe {
+  //pose de la bombe
+  var x: Int = 1
+  var y: Int = 1
+  MainGame.game(x)(y) = 6
+
+  def activation(): Unit = {
+    for (direction <- 0 until 4) { //0=north 1=east 2=south 3=west
+      var size = math.random() * 3 // number of blocks affected by the explosion between 0 and 3
+      for (i <- 0 to size) {
+        if (direction == 0) {//0=north
+          MainGame.game(x)(y) = 7
+        } else if (direction == 2) {//2=south
+          MainGame.game(x)(y) = 7
+        }
+        else if (direction == 1) {//1=east
+          MainGame.game(x)(y) = 7
+        }
+        else if (direction == 3) {//3=west
+          MainGame.game(x)(y) = 7
+        }
+      }
+    }
+  }
+}
+
 object setting_screen {
   var START: Boolean = false
   val settingWindow: FunGraphics = new FunGraphics(600, 400, "Maze Settings")
@@ -321,7 +357,7 @@ object MainGame extends App {
     })
   }
   var game: Array[Array[Int]] = Motor.generategame(Game_screen.WIDTH, Game_screen.HEIGHT)
-  while(true){
+  while (true) {
     Thread.sleep(20)
     Player1.Nextpos
     Player2.Nextpos
