@@ -68,7 +68,7 @@ object Display {
   val wallFile = new GraphicsBitmap("/res/bloc.png")
   val solFile = new GraphicsBitmap("/res/sol.png")
   val persFile = new GraphicsBitmap("/res/joueur.png")
-  val rocFile = new GraphicsBitmap("/res/bloc (1).png")//place holder
+  val rocFile = new GraphicsBitmap("/res/bloc (1).png")
 
   def blit(grid: Array[Array[Int]]): Unit = {
     Game_screen.gameWindow.frontBuffer.synchronized {
