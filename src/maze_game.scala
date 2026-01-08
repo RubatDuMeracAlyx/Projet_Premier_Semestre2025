@@ -121,7 +121,6 @@ object Motor {
         }
       }
     }
-    Display.blit(game)
     return game
   }
 }
