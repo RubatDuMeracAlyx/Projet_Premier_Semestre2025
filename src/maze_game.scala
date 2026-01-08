@@ -135,7 +135,49 @@ object Player1 {
 
   def Nextpos(): Unit = {
     MainGame.game(x)(y) = 4
-    Display.blit(MainGame.game)
+  }
+
+  def place_bombe(): Unit = {
+
+    var bombeX = x
+    var bombeY = y
+    def détonate {
+      //timer avant détonation de la bombe
+      var north = (math.random() * 3).toInt
+      for (i <- 0 to north) {
+        if (MainGame.game(bombeX - 1)(bombeY) != 1) {
+          MainGame.game(bombeX - 1)(bombeY) = 7
+          //timer de durer d'affichage de l'explosion
+          MainGame.game(bombeX - 1)(bombeY) = 0
+        }
+      }
+      var south = (math.random() * 3).toInt
+      for (i <- 0 to south) {
+        if (MainGame.game(bombeX + 1)(bombeY) != 1) {
+          MainGame.game(bombeX + 1)(bombeY) = 7
+          //timer de durer d'affichage de l'explosion
+          MainGame.game(bombeX + 1)(bombeY) = 0
+        }
+      }
+      var east = (math.random() * 3).toInt
+      for (i <- 0 to east) {
+        if (MainGame.game(bombeX)(bombeY - 1) != 1) {
+          MainGame.game(bombeX)(bombeY - 1) = 7
+          //timer de durer d'affichage de l'explosion
+          MainGame.game(bombeX)(bombeY - 1) = 0
+        }
+      }
+      var west = (math.random() * 3).toInt
+      for (i <- 0 to west) {
+        if (MainGame.game(bombeX)(bombeY + 1) != 1) {
+          MainGame.game(bombeX)(bombeY + 1) = 7
+          //timer de durer d'affichage de l'explosion
+          MainGame.game(bombeX)(bombeY + 1) = 0
+        }
+      }
+    }
+    MainGame.game(bombeX)(bombeY) = 6
+    détonate
   }
 }
 
@@ -148,33 +190,6 @@ object Player2 {
 
   def Nextpos(): Unit = {
     MainGame.game(Player2.x)(Player2.y) = 5
-    Display.blit(MainGame.game)
-  }
-}
-
-object Bombe {
-  //pose de la bombe
-  var x: Int = 1
-  var y: Int = 1
-  MainGame.game(x)(y) = 6
-
-  def activation(): Unit = {
-    for (direction <- 0 until 4) { //0=north 1=east 2=south 3=west
-      var size = math.random() * 3 // number of blocks affected by the explosion between 0 and 3
-      for (i <- 0 to size) {
-        if (direction == 0) {//0=north
-          MainGame.game(x)(y) = 7
-        } else if (direction == 2) {//2=south
-          MainGame.game(x)(y) = 7
-        }
-        else if (direction == 1) {//1=east
-          MainGame.game(x)(y) = 7
-        }
-        else if (direction == 3) {//3=west
-          MainGame.game(x)(y) = 7
-        }
-      }
-    }
   }
 }
 
@@ -339,10 +354,13 @@ object MainGame extends App {
         if (e.getKeyCode == KeyEvent.VK_RIGHT) {
           if (game(Player1.x + 1)(Player1.y) == 0) Player1.x += 1
         }
+        if (e.getKeyCode == KeyEvent.VK_SHIFT) {
+          Player1.place_bombe()
+        }
 
         game(Player2.x)(Player2.y) = 0
         if (e.getKeyCode == KeyEvent.VK_W) {
-          if (game(Player2.x)(Player2.y - 1) == 0) Player2.y -= 1
+          if (game(Player2.x)(Player2.y - 1) != 1 && game(Player2.x)(Player2.y - 1) != 2) Player2.y -= 1
         }
         if (e.getKeyCode == KeyEvent.VK_S) {
           if (game(Player2.x)(Player2.y + 1) == 0) Player2.y += 1
