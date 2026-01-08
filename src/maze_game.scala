@@ -141,39 +141,42 @@ object Player1 {
     var bombeX = x
     var bombeY = y
     def détonate {
-      //timer avant détonation de la bombe
-      var north = (math.random() * 3).toInt
-      for (i <- 0 to north) {
-        if (MainGame.game(bombeX - 1)(bombeY) != 1) {
-          MainGame.game(bombeX - 1)(bombeY) = 7
-          //timer de durer d'affichage de l'explosion
-          MainGame.game(bombeX - 1)(bombeY) = 0
+      Thread.sleep(1000)
+      var West = (1+math.random() * 3).toInt
+      for (i <- 0 to West) {
+        if (MainGame.game(bombeX - i)(bombeY) != 1) {
+          MainGame.game(bombeX - i)(bombeY) = 7
+          Thread.sleep(500)
+          MainGame.game(bombeX - i)(bombeY) = 0
         }
       }
-      var south = (math.random() * 3).toInt
-      for (i <- 0 to south) {
-        if (MainGame.game(bombeX + 1)(bombeY) != 1) {
-          MainGame.game(bombeX + 1)(bombeY) = 7
-          //timer de durer d'affichage de l'explosion
-          MainGame.game(bombeX + 1)(bombeY) = 0
+      var East = (1+math.random() * 3).toInt
+      for (i <- 0 to East) {
+        if (MainGame.game(bombeX + i)(bombeY) != 1) {
+          MainGame.game(bombeX + i)(bombeY) = 7
+          Thread.sleep(500)
+          MainGame.game(bombeX + i)(bombeY) = 0
         }
       }
-      var east = (math.random() * 3).toInt
-      for (i <- 0 to east) {
-        if (MainGame.game(bombeX)(bombeY - 1) != 1) {
-          MainGame.game(bombeX)(bombeY - 1) = 7
-          //timer de durer d'affichage de l'explosion
-          MainGame.game(bombeX)(bombeY - 1) = 0
+      var North = (1+math.random() * 3).toInt
+      for (i <- 0 to North) {
+        if (MainGame.game(bombeX)(bombeY - i) != 1) {
+          MainGame.game(bombeX)(bombeY - i) = 7
+          Thread.sleep(500)
+          MainGame.game(bombeX)(bombeY - i) = 0
         }
       }
-      var west = (math.random() * 3).toInt
-      for (i <- 0 to west) {
-        if (MainGame.game(bombeX)(bombeY + 1) != 1) {
-          MainGame.game(bombeX)(bombeY + 1) = 7
-          //timer de durer d'affichage de l'explosion
-          MainGame.game(bombeX)(bombeY + 1) = 0
+      var South = (1+math.random() * 3).toInt
+      for (i <- 0 to South) {
+        if (MainGame.game(bombeX)(bombeY + i) != 1) {
+          MainGame.game(bombeX)(bombeY + i) = 7
+          Thread.sleep(500)
+          MainGame.game(bombeX)(bombeY + i) = 0
         }
       }
+      MainGame.game(bombeX)(bombeY) = 7
+      Thread.sleep(500)
+      MainGame.game(bombeX)(bombeY) = 0
     }
     MainGame.game(bombeX)(bombeY) = 6
     détonate
@@ -184,11 +187,57 @@ object Player2 {
   //spawn du joueur
   var x: Int = Game_screen.WIDTH - 2
   var y: Int = Game_screen.HEIGHT - 2
-  MainGame.game(Player2.x - 1)(Player2.y) = 0
-  MainGame.game(Player2.x)(Player2.y - 1) = 0
+  MainGame.game(x - 1)(y) = 0
+  MainGame.game(x)(y - 1) = 0
 
   def Nextpos(): Unit = {
-    MainGame.game(Player2.x)(Player2.y) = 5
+    MainGame.game(x)(y) = 4
+  }
+
+  def place_bombe(): Unit = {
+
+    var bombeX = x
+    var bombeY = y
+    def détonate {
+      Thread.sleep(1000)
+      var West = (1+math.random() * 3).toInt
+      for (i <- 0 to West) {
+        if (MainGame.game(bombeX - i)(bombeY) != 1) {
+          MainGame.game(bombeX - i)(bombeY) = 7
+          Thread.sleep(500)
+          MainGame.game(bombeX - i)(bombeY) = 0
+        }
+      }
+      var East = (1+math.random() * 3).toInt
+      for (i <- 0 to East) {
+        if (MainGame.game(bombeX + i)(bombeY) != 1) {
+          MainGame.game(bombeX + i)(bombeY) = 7
+          Thread.sleep(500)
+          MainGame.game(bombeX + i)(bombeY) = 0
+        }
+      }
+      var North = (1+math.random() * 3).toInt
+      for (i <- 0 to North) {
+        if (MainGame.game(bombeX)(bombeY - i) != 1) {
+          MainGame.game(bombeX)(bombeY - i) = 7
+          Thread.sleep(500)
+          MainGame.game(bombeX)(bombeY - i) = 0
+        }
+      }
+      var South = (1+math.random() * 3).toInt
+      for (i <- 0 to South) {
+        if (MainGame.game(bombeX)(bombeY + i) != 1) {
+          MainGame.game(bombeX)(bombeY + i) = 7
+          Thread.sleep(500)
+          MainGame.game(bombeX)(bombeY + i) = 0
+        }
+      }
+      MainGame.game(bombeX)(bombeY) = 7
+      Thread.sleep(500)
+      MainGame.game(bombeX)(bombeY) = 0
+    }
+    MainGame.game(bombeX)(bombeY) = 6
+    détonate
   }
 }
 
@@ -369,6 +418,9 @@ object MainGame extends App {
         }
         if (e.getKeyCode == KeyEvent.VK_D) {
           if (game(Player2.x + 1)(Player2.y) == 0) Player2.x += 1
+        }
+        if (e.getKeyCode == KeyEvent.VK_SPACE) {
+          Player2.place_bombe()
         }
       }
     })
