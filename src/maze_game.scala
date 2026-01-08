@@ -1,4 +1,3 @@
-import MainGame.game
 import hevs.graphics.FunGraphics
 import hevs.graphics.utils.GraphicsBitmap
 
@@ -140,46 +139,69 @@ object Player1 {
 
     var bombeX = x
     var bombeY = y
-    def détonate {
-      Thread.sleep(1000)
-      var West = (1+math.random() * 3).toInt
+    val placed_time = MainGame.timer
+
+    def détonate ():Boolean={
+      var activated = false
+      var West = (1).toInt
+      var East = (1).toInt
+      var North = (1).toInt
+      var South = (1).toInt
+
       for (i <- 0 to West) {
         if (MainGame.game(bombeX - i)(bombeY) != 1) {
+          if (MainGame.timer-placed_time >= 3000){
           MainGame.game(bombeX - i)(bombeY) = 7
-          Thread.sleep(500)
+          }
+          if (MainGame.timer-placed_time >= 4000){
           MainGame.game(bombeX - i)(bombeY) = 0
         }
+        }
       }
-      var East = (1+math.random() * 3).toInt
       for (i <- 0 to East) {
         if (MainGame.game(bombeX + i)(bombeY) != 1) {
-          MainGame.game(bombeX + i)(bombeY) = 7
-          Thread.sleep(500)
-          MainGame.game(bombeX + i)(bombeY) = 0
+          if (MainGame.timer-placed_time >= 3000) {
+            MainGame.game(bombeX + i)(bombeY) = 7
+          }
+          if (MainGame.timer - placed_time >= 4000) {
+            MainGame.game(bombeX + i)(bombeY) = 0
+          }
         }
       }
-      var North = (1+math.random() * 3).toInt
       for (i <- 0 to North) {
         if (MainGame.game(bombeX)(bombeY - i) != 1) {
-          MainGame.game(bombeX)(bombeY - i) = 7
-          Thread.sleep(500)
-          MainGame.game(bombeX)(bombeY - i) = 0
+          if (MainGame.timer-placed_time >= 3000) {
+            MainGame.game(bombeX)(bombeY - i) = 7
+          }
+          if (MainGame.timer - placed_time >= 4000) {
+            MainGame.game(bombeX)(bombeY - i) = 0
+          }
         }
       }
-      var South = (1+math.random() * 3).toInt
       for (i <- 0 to South) {
         if (MainGame.game(bombeX)(bombeY + i) != 1) {
+          if (MainGame.timer-placed_time >= 3000){
           MainGame.game(bombeX)(bombeY + i) = 7
-          Thread.sleep(500)
-          MainGame.game(bombeX)(bombeY + i) = 0
+          }
+          if (MainGame.timer - placed_time >= 4000) {
+            MainGame.game(bombeX)(bombeY + i) = 0
+          }
         }
       }
-      MainGame.game(bombeX)(bombeY) = 7
-      Thread.sleep(500)
-      MainGame.game(bombeX)(bombeY) = 0
+      if (MainGame.timer-placed_time >= 3000) {
+        MainGame.game(bombeX)(bombeY) = 7
+      }
+        if (MainGame.timer-placed_time == 4000) {
+          MainGame.game(bombeX)(bombeY) = 0
+          activated = true
+        }
+      return activated
     }
+
     MainGame.game(bombeX)(bombeY) = 6
-    détonate
+    while (détonate()==false){
+      détonate
+    }
   }
 }
 
@@ -194,51 +216,73 @@ object Player2 {
     MainGame.game(x)(y) = 4
   }
 
-  def place_bombe(): Unit = {
+  /**def place_bombe(): Unit = {
 
     var bombeX = x
     var bombeY = y
     def détonate {
       Thread.sleep(1000)
       var West = (1+math.random() * 3).toInt
-      for (i <- 0 to West) {
+      var East = (1+math.random() * 3).toInt
+      var North = (1+math.random() * 3).toInt
+      var South = (1+math.random() * 3).toInt
+      MainGame.game(bombeX)(bombeY) = 7
+      while (i <- 0 to West) {
         if (MainGame.game(bombeX - i)(bombeY) != 1) {
           MainGame.game(bombeX - i)(bombeY) = 7
-          Thread.sleep(500)
-          MainGame.game(bombeX - i)(bombeY) = 0
+        }else{
+
         }
       }
-      var East = (1+math.random() * 3).toInt
+
       for (i <- 0 to East) {
         if (MainGame.game(bombeX + i)(bombeY) != 1) {
           MainGame.game(bombeX + i)(bombeY) = 7
-          Thread.sleep(500)
-          MainGame.game(bombeX + i)(bombeY) = 0
         }
       }
-      var North = (1+math.random() * 3).toInt
+
       for (i <- 0 to North) {
         if (MainGame.game(bombeX)(bombeY - i) != 1) {
           MainGame.game(bombeX)(bombeY - i) = 7
-          Thread.sleep(500)
-          MainGame.game(bombeX)(bombeY - i) = 0
         }
       }
-      var South = (1+math.random() * 3).toInt
+
       for (i <- 0 to South) {
         if (MainGame.game(bombeX)(bombeY + i) != 1) {
           MainGame.game(bombeX)(bombeY + i) = 7
-          Thread.sleep(500)
+        }
+      }
+
+
+      Thread.sleep(500)
+      MainGame.game(bombeX)(bombeY) = 0
+      for (i <- 0 to West) {
+        if (MainGame.game(bombeX - i)(bombeY) == 7) {
+          MainGame.game(bombeX - i)(bombeY) = 0
+        }
+      }
+
+      for (i <- 0 to East) {
+        if (MainGame.game(bombeX + i)(bombeY) == 7) {
+          MainGame.game(bombeX + i)(bombeY) = 0
+        }
+      }
+
+      for (i <- 0 to North) {
+        if (MainGame.game(bombeX)(bombeY - i) == 7) {
+          MainGame.game(bombeX)(bombeY - i) = 0
+        }
+      }
+
+      for (i <- 0 to South) {
+        if (MainGame.game(bombeX)(bombeY + i) == 7) {
           MainGame.game(bombeX)(bombeY + i) = 0
         }
       }
-      MainGame.game(bombeX)(bombeY) = 7
-      Thread.sleep(500)
-      MainGame.game(bombeX)(bombeY) = 0
     }
     MainGame.game(bombeX)(bombeY) = 6
     détonate
-  }
+  }**/
 }
 
 object setting_screen {
@@ -391,16 +435,16 @@ object MainGame extends App {
       override def keyPressed(e: KeyEvent): Unit = {
         game(Player1.x)(Player1.y) = 0
         if (e.getKeyCode == KeyEvent.VK_UP) {
-          if (game(Player1.x)(Player1.y - 1) == 0) Player1.y -= 1
+          if (game(Player1.x)(Player1.y - 1) != 1 && game(Player1.x)(Player1.y - 1) != 2) Player1.y -= 1
         }
         if (e.getKeyCode == KeyEvent.VK_DOWN) {
-          if (game(Player1.x)(Player1.y + 1) == 0) Player1.y += 1
+          if (game(Player1.x)(Player1.y + 1) != 1 && game(Player1.x)(Player1.y + 1) != 2) Player1.y += 1
         }
         if (e.getKeyCode == KeyEvent.VK_LEFT) {
-          if (game(Player1.x - 1)(Player1.y) == 0) Player1.x -= 1
+          if (game(Player1.x - 1)(Player1.y) != 1 && game(Player1.x - 1)(Player1.y) != 2) Player1.x -= 1
         }
         if (e.getKeyCode == KeyEvent.VK_RIGHT) {
-          if (game(Player1.x + 1)(Player1.y) == 0) Player1.x += 1
+          if (game(Player1.x + 1)(Player1.y) != 1 && game(Player1.x + 1)(Player1.y) != 2) Player1.x += 1
         }
         if (e.getKeyCode == KeyEvent.VK_SHIFT) {
           Player1.place_bombe()
@@ -411,26 +455,28 @@ object MainGame extends App {
           if (game(Player2.x)(Player2.y - 1) != 1 && game(Player2.x)(Player2.y - 1) != 2) Player2.y -= 1
         }
         if (e.getKeyCode == KeyEvent.VK_S) {
-          if (game(Player2.x)(Player2.y + 1) == 0) Player2.y += 1
+          if (game(Player2.x)(Player2.y + 1) != 1 && game(Player2.x)(Player2.y + 1) != 2) Player2.y += 1
         }
         if (e.getKeyCode == KeyEvent.VK_A) {
-          if (game(Player2.x - 1)(Player2.y) == 0) Player2.x -= 1
+          if (game(Player2.x - 1)(Player2.y) != 1 && game(Player2.x - 1)(Player2.y) != 2) Player2.x -= 1
         }
         if (e.getKeyCode == KeyEvent.VK_D) {
-          if (game(Player2.x + 1)(Player2.y) == 0) Player2.x += 1
+          if (game(Player2.x + 1)(Player2.y) != 1 && game(Player2.x + 1)(Player2.y) != 2) Player2.x += 1
         }
         if (e.getKeyCode == KeyEvent.VK_SPACE) {
-          Player2.place_bombe()
+
         }
       }
     })
   }
   var game: Array[Array[Int]] = Motor.generategame(Game_screen.WIDTH, Game_screen.HEIGHT)
+  var timer:Int = 0
   while (true) {
     Thread.sleep(20)
     Player1.Nextpos
     Player2.Nextpos
     Display.blit(game)
+    timer +=20
   }
 }
 
