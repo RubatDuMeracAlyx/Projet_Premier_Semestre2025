@@ -103,7 +103,7 @@ object Display {
 }
 
 object Motor {
-  def generategame(width: Int, height: Int, visualize: Boolean = false): Array[Array[Int]] = {
+  def generategame(width: Int, height: Int): Array[Array[Int]] = {
     var game: Array[Array[Int]] = Array.ofDim[Int](width, height)
     for (x <- 0 until game.length) {
       for (y <- 0 until game(x).length) {
@@ -123,7 +123,98 @@ object Motor {
     return game
   }
 }
+class Bomb (var bombX:Int, var bombY:Int){
+  val time_before_explosion = 3000
+  val explosion_time = 1000
+  val West = (1).toInt
+  val East = (1).toInt
+  val North = (1).toInt
+  val South = (1).toInt
+  var bomb_placed = false
+  var remainig_time = time_before_explosion+explosion_time
 
+  def place_bomb():Boolean={
+    MainGame.game(bombX)(bombY) = 6
+    MainGame.timemanager(bombX)(bombY) = remainig_time
+    bomb_placed = true
+    println(s"bomb placed at : ($bombX;$bombY) remainig time:$remainig_time $bomb_placed")
+    return bomb_placed
+  }
+  def tick(): Int = {
+    if (bomb_placed == true){
+      println("bomb ticked")
+      MainGame.timemanager(bombX)(bombY) -= 1
+      remainig_time = MainGame.timemanager(bombX)(bombY)
+      println(s"$remainig_time")
+    }
+    return remainig_time
+  }
+  def explode(): Unit = {
+      println("bomb exploded")
+        for (i <- 0 to West) {
+          if (MainGame.game(bombX - i)(bombY) != 1) {
+            MainGame.game(bombX - i)(bombY) = 7
+          }
+        }
+        for (i <- 0 to East) {
+          if (MainGame.game(bombX + i)(bombY) != 1) {
+
+            MainGame.game(bombX + i)(bombY) = 7
+          }
+        }
+        for (i <- 0 to North) {
+          if (MainGame.game(bombX)(bombY - i) != 1) {
+            MainGame.game(bombX)(bombY - i) = 7
+          }
+        }
+        for (i <- 0 to South) {
+          if (MainGame.game(bombX)(bombY + i) != 1) {
+            MainGame.game(bombX)(bombY + i) = 7
+          }
+        }
+        MainGame.game(bombX)(bombY) = 7
+  }
+  def unexplode(): Unit = {
+      println("bomb unexploded")
+        for (i <- 0 to West) {
+          if (MainGame.game(bombX - i)(bombY) == 7) {
+            MainGame.game(bombX - i)(bombY) = 0
+          }
+        }
+        for (i <- 0 to East) {
+          if (MainGame.game(bombX + i)(bombY) == 7) {
+
+            MainGame.game(bombX + i)(bombY) = 0
+          }
+        }
+        for (i <- 0 to North) {
+          if (MainGame.game(bombX)(bombY - i) == 7) {
+            MainGame.game(bombX)(bombY - i) = 0
+          }
+        }
+        for (i <- 0 to South) {
+          if (MainGame.game(bombX)(bombY + i) == 7) {
+            MainGame.game(bombX)(bombY + i) = 0
+          }
+        }
+        MainGame.game(bombX)(bombY) = 0
+  }
+
+  def manage():Unit={
+    if (bomb_placed==true){
+      println(s"$bomb_placed")
+      println(s"$remainig_time")
+      if(remainig_time<=time_before_explosion){
+        explode()
+        if(remainig_time<=explosion_time){
+          unexplode()
+          bomb_placed=false
+        }
+      }
+      println(s"$bomb_placed")
+    }
+  }
+}
 object Player1 {
   //spawn du joueur
   var x: Int = 1
@@ -134,74 +225,10 @@ object Player1 {
   def Nextpos(): Unit = {
     MainGame.game(x)(y) = 4
   }
-
-  def place_bombe(): Unit = {
-
-    var bombeX = x
-    var bombeY = y
-    val placed_time = MainGame.timer
-
-    def détonate ():Boolean={
-      var activated = false
-      var West = (1).toInt
-      var East = (1).toInt
-      var North = (1).toInt
-      var South = (1).toInt
-
-      for (i <- 0 to West) {
-        if (MainGame.game(bombeX - i)(bombeY) != 1) {
-          if (MainGame.timer-placed_time >= 3000){
-          MainGame.game(bombeX - i)(bombeY) = 7
-          }
-          if (MainGame.timer-placed_time >= 4000){
-          MainGame.game(bombeX - i)(bombeY) = 0
-        }
-        }
-      }
-      for (i <- 0 to East) {
-        if (MainGame.game(bombeX + i)(bombeY) != 1) {
-          if (MainGame.timer-placed_time >= 3000) {
-            MainGame.game(bombeX + i)(bombeY) = 7
-          }
-          if (MainGame.timer - placed_time >= 4000) {
-            MainGame.game(bombeX + i)(bombeY) = 0
-          }
-        }
-      }
-      for (i <- 0 to North) {
-        if (MainGame.game(bombeX)(bombeY - i) != 1) {
-          if (MainGame.timer-placed_time >= 3000) {
-            MainGame.game(bombeX)(bombeY - i) = 7
-          }
-          if (MainGame.timer - placed_time >= 4000) {
-            MainGame.game(bombeX)(bombeY - i) = 0
-          }
-        }
-      }
-      for (i <- 0 to South) {
-        if (MainGame.game(bombeX)(bombeY + i) != 1) {
-          if (MainGame.timer-placed_time >= 3000){
-          MainGame.game(bombeX)(bombeY + i) = 7
-          }
-          if (MainGame.timer - placed_time >= 4000) {
-            MainGame.game(bombeX)(bombeY + i) = 0
-          }
-        }
-      }
-      if (MainGame.timer-placed_time >= 3000) {
-        MainGame.game(bombeX)(bombeY) = 7
-      }
-        if (MainGame.timer-placed_time == 4000) {
-          MainGame.game(bombeX)(bombeY) = 0
-          activated = true
-        }
-      return activated
-    }
-
-    MainGame.game(bombeX)(bombeY) = 6
-    while (détonate()==false){
-      détonate
-    }
+  def bomb(): Bomb = {
+    var P1_bomb:Bomb = new Bomb(x,y)
+    println(s"${P1_bomb.bomb_placed}")
+    return P1_bomb
   }
 }
 
@@ -447,7 +474,8 @@ object MainGame extends App {
           if (game(Player1.x + 1)(Player1.y) != 1 && game(Player1.x + 1)(Player1.y) != 2) Player1.x += 1
         }
         if (e.getKeyCode == KeyEvent.VK_SHIFT) {
-          Player1.place_bombe()
+          Player1.bomb().place_bomb()
+          Player1.bomb().bomb_placed=true
         }
 
         game(Player2.x)(Player2.y) = 0
@@ -470,13 +498,23 @@ object MainGame extends App {
     })
   }
   var game: Array[Array[Int]] = Motor.generategame(Game_screen.WIDTH, Game_screen.HEIGHT)
-  var timer:Int = 0
+  var timemanager:Array[Array[Int]] = Array.ofDim(Game_screen.WIDTH, Game_screen.HEIGHT)
   while (true) {
-    Thread.sleep(20)
+    Thread.sleep(2000)
+    println(s"${Player1.bomb.bomb_placed}")
+
+    for (x<- 0 until timemanager.length){
+      for (y<- 0 until timemanager(x).length){
+        if (Player1.bomb().bomb_placed == true){
+          Player1.bomb().tick()
+          Player1.bomb().manage()
+        }
+        }
+      }
+
     Player1.Nextpos
     Player2.Nextpos
     Display.blit(game)
-    timer +=20
   }
 }
 
