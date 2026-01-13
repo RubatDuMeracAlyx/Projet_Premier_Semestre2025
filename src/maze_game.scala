@@ -1,5 +1,6 @@
 import hevs.graphics.FunGraphics
 import hevs.graphics.utils.GraphicsBitmap
+import scala.util.control.Breaks._
 
 import java.awt.event.{KeyAdapter, KeyEvent, MouseAdapter, MouseEvent, MouseMotionAdapter}
 import java.awt.Color
@@ -123,98 +124,144 @@ object Motor {
     return game
   }
 }
-class Bomb (var bombX:Int, var bombY:Int){
-  val time_before_explosion = 3000
-  val explosion_time = 1000
-  val West = (1).toInt
-  val East = (1).toInt
-  val North = (1).toInt
-  val South = (1).toInt
-  var bomb_placed = false
-  var remainig_time = time_before_explosion+explosion_time
 
-  def place_bomb():Boolean={
+class Bomb(bombX: Int, bombY: Int) {
+  val time_before_explosion = 10000
+  val explosion_time = 3000
+  val West = (1+math.random()*3).toInt
+  val East = (1+math.random()*3).toInt
+  val North = (1+math.random()*3).toInt
+  val South = (1+math.random()*3).toInt
+  var bomb_placed = false
+  var remainig_time = time_before_explosion + explosion_time
+
+  def place_bomb(): Boolean = {
     MainGame.game(bombX)(bombY) = 6
     MainGame.timemanager(bombX)(bombY) = remainig_time
     bomb_placed = true
-    println(s"bomb placed at : ($bombX;$bombY) remainig time:$remainig_time $bomb_placed")
     return bomb_placed
   }
+
   def tick(): Int = {
-    if (bomb_placed == true){
-      println("bomb ticked")
+    if (bomb_placed == true) {
       MainGame.timemanager(bombX)(bombY) -= 1
       remainig_time = MainGame.timemanager(bombX)(bombY)
-      println(s"$remainig_time")
     }
     return remainig_time
   }
+
   def explode(): Unit = {
-      println("bomb exploded")
-        for (i <- 0 to West) {
-          if (MainGame.game(bombX - i)(bombY) != 1) {
-            MainGame.game(bombX - i)(bombY) = 7
-          }
-        }
-        for (i <- 0 to East) {
-          if (MainGame.game(bombX + i)(bombY) != 1) {
+    // centre
+    MainGame.game(bombX)(bombY) = 7
+    // WEST
+    breakable {
+      for (i <- 1 to West) {
+        val nx = bombX - i
+        val ny = bombY
 
-            MainGame.game(bombX + i)(bombY) = 7
-          }
-        }
-        for (i <- 0 to North) {
-          if (MainGame.game(bombX)(bombY - i) != 1) {
-            MainGame.game(bombX)(bombY - i) = 7
-          }
-        }
-        for (i <- 0 to South) {
-          if (MainGame.game(bombX)(bombY + i) != 1) {
-            MainGame.game(bombX)(bombY + i) = 7
-          }
-        }
-        MainGame.game(bombX)(bombY) = 7
+        if (MainGame.game(nx)(ny) == 1) break
+
+        MainGame.game(nx)(ny) = 7
+      }
+    }
+    // EAST
+    breakable {
+      for (i <- 1 to East) {
+        val nx = bombX + i
+        val ny = bombY
+
+        if (MainGame.game(nx)(ny) == 1) break
+
+        MainGame.game(nx)(ny) = 7
+      }
+    }
+    // NORTH
+    breakable {
+      for (i <- 1 to North) {
+        val nx = bombX
+        val ny = bombY - i
+
+        if (MainGame.game(nx)(ny) == 1) break
+
+        MainGame.game(nx)(ny) = 7
+      }
+    }
+    // SOUTH
+    breakable {
+      for (i <- 1 to South) {
+        val nx = bombX
+        val ny = bombY + i
+
+        if (MainGame.game(nx)(ny) == 1) break
+
+        MainGame.game(nx)(ny) = 7
+      }
+    }
   }
+
   def unexplode(): Unit = {
-      println("bomb unexploded")
-        for (i <- 0 to West) {
-          if (MainGame.game(bombX - i)(bombY) == 7) {
-            MainGame.game(bombX - i)(bombY) = 0
-          }
-        }
-        for (i <- 0 to East) {
-          if (MainGame.game(bombX + i)(bombY) == 7) {
+    // centre
+    MainGame.game(bombX)(bombY) = 0
+    // WEST
+    breakable {
+      for (i <- 1 to West) {
+        val nx = bombX - i
+        val ny = bombY
 
-            MainGame.game(bombX + i)(bombY) = 0
-          }
-        }
-        for (i <- 0 to North) {
-          if (MainGame.game(bombX)(bombY - i) == 7) {
-            MainGame.game(bombX)(bombY - i) = 0
-          }
-        }
-        for (i <- 0 to South) {
-          if (MainGame.game(bombX)(bombY + i) == 7) {
-            MainGame.game(bombX)(bombY + i) = 0
-          }
-        }
-        MainGame.game(bombX)(bombY) = 0
+        if (MainGame.game(nx)(ny) == 1) break
+
+        MainGame.game(nx)(ny) = 0
+      }
+    }
+    // EAST
+    breakable {
+      for (i <- 1 to East) {
+        val nx = bombX + i
+        val ny = bombY
+
+        if (MainGame.game(nx)(ny) == 1) break
+
+        MainGame.game(nx)(ny) = 0
+      }
+    }
+    // NORTH
+    breakable {
+      for (i <- 1 to North) {
+        val nx = bombX
+        val ny = bombY - i
+
+        if (MainGame.game(nx)(ny) == 1) break
+
+        MainGame.game(nx)(ny) = 0
+      }
+    }
+    // SOUTH
+    breakable {
+      for (i <- 1 to South) {
+        val nx = bombX
+        val ny = bombY + i
+
+        if (MainGame.game(nx)(ny) == 1) break
+
+        MainGame.game(nx)(ny) = 0
+      }
+    }
   }
 
-  def manage():Unit={
-    if (bomb_placed==true){
-      println(s"$bomb_placed")
-      println(s"$remainig_time")
-      if(remainig_time<=time_before_explosion){
+  def manage(): Unit = {
+    if (bomb_placed == true) {
+      MainGame.game(bombX)(bombY) = 6
+      if (remainig_time <= explosion_time) {
         explode()
-        if(remainig_time<=explosion_time){
+        if (remainig_time <= explosion_time / 2) {
           unexplode()
-          bomb_placed=false
+          bomb_placed = false
         }
       }
-      println(s"$bomb_placed")
     }
   }
 }
+
 object Player1 {
   //spawn du joueur
   var x: Int = 1
@@ -222,13 +269,16 @@ object Player1 {
   MainGame.game(x + 1)(y) = 0
   MainGame.game(x)(y + 1) = 0
 
+  var currentBomb: Option[Bomb] = None
+
   def Nextpos(): Unit = {
     MainGame.game(x)(y) = 4
   }
-  def bomb(): Bomb = {
-    var P1_bomb:Bomb = new Bomb(x,y)
-    println(s"${P1_bomb.bomb_placed}")
-    return P1_bomb
+
+  def bomb(): Unit = {
+    val b = new Bomb(x, y)
+    b.place_bomb()
+    currentBomb = Some(b)
   }
 }
 
@@ -239,77 +289,17 @@ object Player2 {
   MainGame.game(x - 1)(y) = 0
   MainGame.game(x)(y - 1) = 0
 
+  var currentBomb: Option[Bomb] = None
+
   def Nextpos(): Unit = {
-    MainGame.game(x)(y) = 4
+    MainGame.game(x)(y) = 5
   }
 
-  /**def place_bombe(): Unit = {
-
-    var bombeX = x
-    var bombeY = y
-    def détonate {
-      Thread.sleep(1000)
-      var West = (1+math.random() * 3).toInt
-      var East = (1+math.random() * 3).toInt
-      var North = (1+math.random() * 3).toInt
-      var South = (1+math.random() * 3).toInt
-      MainGame.game(bombeX)(bombeY) = 7
-      while (i <- 0 to West) {
-        if (MainGame.game(bombeX - i)(bombeY) != 1) {
-          MainGame.game(bombeX - i)(bombeY) = 7
-        }else{
-
-        }
-      }
-
-      for (i <- 0 to East) {
-        if (MainGame.game(bombeX + i)(bombeY) != 1) {
-          MainGame.game(bombeX + i)(bombeY) = 7
-        }
-      }
-
-      for (i <- 0 to North) {
-        if (MainGame.game(bombeX)(bombeY - i) != 1) {
-          MainGame.game(bombeX)(bombeY - i) = 7
-        }
-      }
-
-      for (i <- 0 to South) {
-        if (MainGame.game(bombeX)(bombeY + i) != 1) {
-          MainGame.game(bombeX)(bombeY + i) = 7
-        }
-      }
-
-
-      Thread.sleep(500)
-      MainGame.game(bombeX)(bombeY) = 0
-      for (i <- 0 to West) {
-        if (MainGame.game(bombeX - i)(bombeY) == 7) {
-          MainGame.game(bombeX - i)(bombeY) = 0
-        }
-      }
-
-      for (i <- 0 to East) {
-        if (MainGame.game(bombeX + i)(bombeY) == 7) {
-          MainGame.game(bombeX + i)(bombeY) = 0
-        }
-      }
-
-      for (i <- 0 to North) {
-        if (MainGame.game(bombeX)(bombeY - i) == 7) {
-          MainGame.game(bombeX)(bombeY - i) = 0
-        }
-      }
-
-      for (i <- 0 to South) {
-        if (MainGame.game(bombeX)(bombeY + i) == 7) {
-          MainGame.game(bombeX)(bombeY + i) = 0
-        }
-      }
-    }
-    MainGame.game(bombeX)(bombeY) = 6
-    détonate
-  }**/
+  def bomb(): Unit = {
+    val b = new Bomb(x, y)
+    b.place_bomb()
+    currentBomb = Some(b)
+  }
 }
 
 object setting_screen {
@@ -455,7 +445,9 @@ object Game_screen {
 object MainGame extends App {
 
   val first_screen: FunGraphics = setting_screen.settingWindow
+
   setting_screen.run()
+
   if (setting_screen.START == true) {
     val second_screen: FunGraphics = Game_screen.gameWindow
     second_screen.setKeyManager(new KeyAdapter() {
@@ -474,8 +466,7 @@ object MainGame extends App {
           if (game(Player1.x + 1)(Player1.y) != 1 && game(Player1.x + 1)(Player1.y) != 2) Player1.x += 1
         }
         if (e.getKeyCode == KeyEvent.VK_SHIFT) {
-          Player1.bomb().place_bomb()
-          Player1.bomb().bomb_placed=true
+          Player1.bomb()
         }
 
         game(Player2.x)(Player2.y) = 0
@@ -492,29 +483,57 @@ object MainGame extends App {
           if (game(Player2.x + 1)(Player2.y) != 1 && game(Player2.x + 1)(Player2.y) != 2) Player2.x += 1
         }
         if (e.getKeyCode == KeyEvent.VK_SPACE) {
-
+          Player2.bomb()
         }
       }
     })
   }
-  var game: Array[Array[Int]] = Motor.generategame(Game_screen.WIDTH, Game_screen.HEIGHT)
-  var timemanager:Array[Array[Int]] = Array.ofDim(Game_screen.WIDTH, Game_screen.HEIGHT)
-  while (true) {
-    Thread.sleep(2000)
-    println(s"${Player1.bomb.bomb_placed}")
 
-    for (x<- 0 until timemanager.length){
-      for (y<- 0 until timemanager(x).length){
-        if (Player1.bomb().bomb_placed == true){
-          Player1.bomb().tick()
-          Player1.bomb().manage()
+  var gameOver: Boolean = false
+  var game: Array[Array[Int]] = Motor.generategame(Game_screen.WIDTH, Game_screen.HEIGHT)
+  var timemanager: Array[Array[Int]] = Array.ofDim(Game_screen.WIDTH, Game_screen.HEIGHT)
+  while (!gameOver) {
+    Thread.sleep(20)
+
+    for (x <- 0 until timemanager.length) {
+      for (y <- 0 until timemanager(x).length) {
+        Player1.currentBomb.foreach { b =>
+          b.tick()
+          b.manage()
         }
+        Player2.currentBomb.foreach { b =>
+          b.tick()
+          b.manage()
         }
       }
+    }
+
+
+
+    // Vérification mort joueur 1
+    if (game(Player1.x)(Player1.y) == 7) {
+      println("Player 1 is dead")
+      gameOver = true
+    }
+
+    // Vérification mort joueur 2
+    if (game(Player2.x)(Player2.y) == 7) {
+      println("Player 2 is dead")
+      gameOver = true
+    }
 
     Player1.Nextpos
     Player2.Nextpos
+
     Display.blit(game)
+  }
+  if (gameOver) {
+    if (game(Player1.x)(Player1.y) == 7 && game(Player2.x)(Player2.y) == 7)
+      println("Draw!")
+    else if (game(Player1.x)(Player1.y) == 7)
+      println("Player 2 wins!")
+    else
+      println("Player 1 wins!")
   }
 }
 
