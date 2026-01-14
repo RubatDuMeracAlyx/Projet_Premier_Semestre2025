@@ -38,5 +38,42 @@ JOUEUR 2 // VERT (en bas à droite)
 - 's' : Aller en bas
 - 'e' : Poser une bombe
 
+## Structure du code Bomberman
+
+### Architecture générale
+
+Le code est organisé en plusieurs objets et classes Scala qui gèrent différents aspects du jeu :
+
+#### Classes utilitaires
+- **`Button`** : Gère les boutons interactifs (clics, états on/off, affichage)
+
+#### Objets d'affichage
+- **`Display`** : Charge les ressources graphiques (sprites) et gère le rendu de la grille avec la méthode `blit()`
+- **`setting_screen`** : Écran de configuration initial permettant de régler le zoom, la largeur et la hauteur du terrain
+- **`Game_screen`** : Fenêtre de jeu principale
+
+#### Logique du jeu
+- **`Motor`** : Génère la grille de jeu (murs fixes, blocs destructibles, espaces vides)
+- **`Bomb`** : Classe gérant le cycle de vie d'une bombe (placement, timer, explosion en croix, disparition)
+- **`Player1`** et **`Player2`** : Gèrent la position et les actions des deux joueurs (déplacement, pose de bombe)
+
+#### Boucle principale
+- **`MainGame`** : Point d'entrée qui :
+  1. Lance l'écran de configuration
+  2. Initialise la partie
+  3. Gère les contrôles clavier (flèches + Shift pour J1, WASD + Space pour J2)
+  4. Exécute la boucle de jeu avec détection de mort et affichage du gagnant
+
+### Système de grille
+
+Le jeu utilise un système de grille où chaque case contient un entier représentant son type :
+- **0** = vide
+- **1** = mur fixe
+- **2** = bloc destructible
+- **4** = joueur 1
+- **5** = joueur 2
+- **6** = bombe
+- **7** = explosion
+
 
 
