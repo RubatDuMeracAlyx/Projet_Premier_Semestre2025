@@ -497,7 +497,7 @@ object MainGame extends App {
         if (e.getKeyCode == KeyEvent.VK_D) {
           if (game(Player2.x + 1)(Player2.y) != 1 && game(Player2.x + 1)(Player2.y) != 2) Player2.x += 1
         }
-        if (e.getKeyCode == KeyEvent.VK_SPACE) {
+        if (e.getKeyCode == KeyEvent.VK_E) {
           Player2.bomb()
         }
       }
