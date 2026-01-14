@@ -68,9 +68,15 @@ object Display {
   val wallFile = new GraphicsBitmap("/res/bloc.png")
   val solFile = new GraphicsBitmap("/res/sol.png")
   val persFile = new GraphicsBitmap("/res/joueur.png")
-  val rocFile = new GraphicsBitmap("/res/bloc (1).png")
-  val bombeFile = new GraphicsBitmap("/res/bomb.png")
+  val rocFile = new GraphicsBitmap("/res/bloc (1).png")//place holder
+  val bombFile = new GraphicsBitmap("/res/bomb.png")
+  val bomb32x32File = new GraphicsBitmap("/res/bomb32x32.png")
+  val bomb64x64File = new GraphicsBitmap("/res/bomb64x64.png")
+  val titleWhiteFile = new GraphicsBitmap("/res/titleWhite.png")
+  val crate100x100File = new GraphicsBitmap("/res/crate100x100.png")
   val boomFile = new GraphicsBitmap("/res/explosion.png")
+  val pers2File = new GraphicsBitmap("/res/joueur2.png")
+
 
   def blit(grid: Array[Array[Int]]): Unit = {
     Game_screen.gameWindow.frontBuffer.synchronized {
@@ -90,15 +96,16 @@ object Display {
           Game_screen.gameWindow.drawTransformedPicture(xPos * pixel_value + pixel_value / 2, yPos * pixel_value + pixel_value / 2, 0, pixel_value / 16, persFile)
         }
         if (y == 5) { // 5 in the grid is the player2
-          Game_screen.gameWindow.drawTransformedPicture(xPos * pixel_value + pixel_value / 2, yPos * pixel_value + pixel_value / 2, 0, pixel_value / 16, persFile)
+          Game_screen.gameWindow.drawTransformedPicture(xPos * pixel_value + pixel_value / 2, yPos * pixel_value + pixel_value / 2, 0, pixel_value / 16, pers2File)
         }
         if (y == 6) { // 6 in the grid is a Bomb
-          Game_screen.gameWindow.drawTransformedPicture(xPos * pixel_value + pixel_value / 2, yPos * pixel_value + pixel_value / 2, 0, pixel_value / 16, bombeFile)
+          Game_screen.gameWindow.drawTransformedPicture(xPos * pixel_value + pixel_value / 2, yPos * pixel_value + pixel_value / 2, 0, pixel_value / 16, bombFile)
         }
         if (y == 7) { // 4 in the grid is an explosion
           Game_screen.gameWindow.drawTransformedPicture(xPos * pixel_value + pixel_value / 2, yPos * pixel_value + pixel_value / 2, 0, pixel_value / 16, boomFile)
         }
       }
+      Game_screen.gameWindow.drawString(Game_screen.WIDTH * pixel_value / 4, Game_screen.HEIGHT * pixel_value / 2,s"${MainGame.win}","",1,pixel_value,Color.WHITE,2,2)
     }
   }
 }
@@ -340,16 +347,16 @@ object setting_screen {
   })
 
   // --- BOUTONS ---
-  val MIN_ZOOM: Button = new Button(120, 40, 40, 40)
-  val ADD_ZOOM: Button = new Button(260, 40, 40, 40)
+  val MIN_ZOOM: Button = new Button(120, 200, 40, 40)
+  val ADD_ZOOM: Button = new Button(260, 200, 40, 40)
 
-  val MIN_WIDTH: Button = new Button(120, 100, 40, 40)
-  val ADD_WIDTH: Button = new Button(260, 100, 40, 40)
+  val MIN_WIDTH: Button = new Button(120, 270, 40, 40)
+  val ADD_WIDTH: Button = new Button(260, 270, 40, 40)
 
-  val MIN_HIGHT: Button = new Button(120, 160, 40, 40)
-  val ADD_HIGHT: Button = new Button(260, 160, 40, 40)
+  val MIN_HIGHT: Button = new Button(120, 340, 40, 40)
+  val ADD_HIGHT: Button = new Button(260, 340, 40, 40)
 
-  val START_BUTTON: Button = new Button(475, 320, 115, 40)
+  val START_BUTTON: Button = new Button(450, 340, 110, 40)
 
   // --- VALEURS ---
   var zoom = 45 // taille des tiles en pixels
@@ -386,41 +393,49 @@ object setting_screen {
         START = true
 
       // DESSIN
-      settingWindow.clear(Color.WHITE) // efface tout
+      settingWindow.clear(Color.GRAY) // efface tout
+      settingWindow.drawTransformedPicture(300,40,0,1.7,Display.titleWhiteFile)
+      settingWindow.drawTransformedPicture(530,300, 0,0.6,Display.bomb64x64File)
+      settingWindow.drawTransformedPicture(200,175, 0,0.5,Display.crate100x100File)
+      settingWindow.drawTransformedPicture(260,180, 0,0.4,Display.crate100x100File)
+      settingWindow.drawTransformedPicture(240,128, 0.35,0.5,Display.crate100x100File)
+      settingWindow.drawTransformedPicture(530,320, 0,0.4,Display.crate100x100File)
+      settingWindow.drawTransformedPicture(495,330, 0,0.2,Display.crate100x100File)
 
       // --- Zoom ---
-      settingWindow.drawString(50, 70, "Zoom :", Color.BLACK, 18)
-      settingWindow.drawRect(120, 40, 180, 40)
-      MIN_ZOOM.text = "-"
-      ADD_ZOOM.text = "+"
+      settingWindow.drawString(50, 230, "Zoom :", Color.WHITE, 18)
+      settingWindow.drawRect(120, 200, 180, 40)
+      MIN_ZOOM.text = " -"
+      ADD_ZOOM.text = " +"
       MIN_ZOOM.draw(settingWindow)
       ADD_ZOOM.draw(settingWindow)
-      settingWindow.drawString(200, 70, zoom.toString, Color.BLACK, 18)
+      settingWindow.drawString(200, 230, zoom.toString, Color.WHITE, 18)
 
       // --- Width ---
-      settingWindow.drawString(50, 130, "Width :", Color.BLACK, 18)
-      settingWindow.drawRect(120, 100, 180, 40)
-      MIN_WIDTH.text = "-"
-      ADD_WIDTH.text = "+"
+      settingWindow.drawString(50, 300, "Width :", Color.WHITE, 18)
+      settingWindow.drawRect(120, 270, 180, 40)
+      MIN_WIDTH.text = " -"
+      ADD_WIDTH.text = " +"
       MIN_WIDTH.draw(settingWindow)
       ADD_WIDTH.draw(settingWindow)
-      settingWindow.drawString(200, 130, largeur.toString, Color.BLACK, 18)
+      settingWindow.drawString(200, 300, largeur.toString, Color.WHITE, 18)
 
       // --- Height ---
-      settingWindow.drawString(50, 190, "Height :", Color.BLACK, 18)
-      settingWindow.drawRect(120, 160, 180, 40)
-      MIN_HIGHT.text = "-"
-      ADD_HIGHT.text = "+"
+      settingWindow.drawString(50, 370, "Height :", Color.WHITE, 18)
+      settingWindow.drawRect(120, 340, 180, 40)
+      MIN_HIGHT.text = " -"
+      ADD_HIGHT.text = " +"
       MIN_HIGHT.draw(settingWindow)
       ADD_HIGHT.draw(settingWindow)
-      settingWindow.drawString(200, 190, hauteur.toString, Color.BLACK, 18)
+      settingWindow.drawString(200, 370, hauteur.toString, Color.WHITE, 18)
 
       // --- Start ---
       START_BUTTON.draw(settingWindow)
       START_BUTTON.text = "START"
 
       // Stabilise le framerate (~FPS)
-      settingWindow.syncGameLogic(30)
+      settingWindow.syncGameLogic(10)
+      Thread.sleep(20)
     }
 
     // Quand tu sors de la boucle, tu as les valeurs choisies
@@ -492,6 +507,7 @@ object MainGame extends App {
   var gameOver: Boolean = false
   var game: Array[Array[Int]] = Motor.generategame(Game_screen.WIDTH, Game_screen.HEIGHT)
   var timemanager: Array[Array[Int]] = Array.ofDim(Game_screen.WIDTH, Game_screen.HEIGHT)
+  var win:String=""
   while (!gameOver) {
     Thread.sleep(20)
 
@@ -508,17 +524,18 @@ object MainGame extends App {
       }
     }
 
-
-
+    // Vérification mort joueur 1 et 2
+    if(game(Player1.x)(Player1.y) == 7 && game(Player2.x)(Player2.y) == 7){
+      win="Draw!"
+    }
     // Vérification mort joueur 1
-    if (game(Player1.x)(Player1.y) == 7) {
-      println("Player 1 is dead")
+    else if (game(Player1.x)(Player1.y) == 7) {
+      win="Player 2 win"
       gameOver = true
     }
-
     // Vérification mort joueur 2
-    if (game(Player2.x)(Player2.y) == 7) {
-      println("Player 2 is dead")
+    else if (game(Player2.x)(Player2.y) == 7) {
+      win="Player 1 win"
       gameOver = true
     }
 
@@ -526,14 +543,6 @@ object MainGame extends App {
     Player2.Nextpos
 
     Display.blit(game)
-  }
-  if (gameOver) {
-    if (game(Player1.x)(Player1.y) == 7 && game(Player2.x)(Player2.y) == 7)
-      println("Draw!")
-    else if (game(Player1.x)(Player1.y) == 7)
-      println("Player 2 wins!")
-    else
-      println("Player 1 wins!")
   }
 }
 
