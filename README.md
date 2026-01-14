@@ -61,7 +61,7 @@ Le code est organisé en plusieurs objets et classes Scala qui gèrent différen
 - **`MainGame`** : Point d'entrée qui :
   1. Lance l'écran de configuration
   2. Initialise la partie
-  3. Gère les contrôles clavier (flèches + Shift pour J1, WASD + Space pour J2)
+  3. Gère les contrôles clavier (flèches + Shift pour J1, WASD + E pour J2)
   4. Exécute la boucle de jeu avec détection de mort et affichage du gagnant
 
 ### Système de grille
