@@ -143,9 +143,11 @@ class Bomb(bombX: Int, bombY: Int) {
   var remainig_time = time_before_explosion + explosion_time
 
   def place_bomb(): Boolean = {
-    MainGame.game(bombX)(bombY) = 6
-    MainGame.timemanager(bombX)(bombY) = remainig_time
-    bomb_placed = true
+    if (bomb_placed == false){
+      MainGame.game(bombX)(bombY) = 6
+      MainGame.timemanager(bombX)(bombY) = remainig_time
+      bomb_placed = true
+    }
     return bomb_placed
   }
 
@@ -469,16 +471,16 @@ object MainGame extends App {
       override def keyPressed(e: KeyEvent): Unit = {
         game(Player1.x)(Player1.y) = 0
         if (e.getKeyCode == KeyEvent.VK_UP) {
-          if (game(Player1.x)(Player1.y - 1) != 1 && game(Player1.x)(Player1.y - 1) != 2) Player1.y -= 1
+          if (game(Player1.x)(Player1.y - 1) == 0 || game(Player1.x)(Player1.y - 1) == 7) Player1.y -= 1
         }
         if (e.getKeyCode == KeyEvent.VK_DOWN) {
-          if (game(Player1.x)(Player1.y + 1) != 1 && game(Player1.x)(Player1.y + 1) != 2) Player1.y += 1
+          if (game(Player1.x)(Player1.y + 1) == 0 || game(Player1.x)(Player1.y + 1) == 7) Player1.y += 1
         }
         if (e.getKeyCode == KeyEvent.VK_LEFT) {
-          if (game(Player1.x - 1)(Player1.y) != 1 && game(Player1.x - 1)(Player1.y) != 2) Player1.x -= 1
+          if (game(Player1.x - 1)(Player1.y) == 0 || game(Player1.x - 1)(Player1.y) == 7) Player1.x -= 1
         }
         if (e.getKeyCode == KeyEvent.VK_RIGHT) {
-          if (game(Player1.x + 1)(Player1.y) != 1 && game(Player1.x + 1)(Player1.y) != 2) Player1.x += 1
+          if (game(Player1.x + 1)(Player1.y) == 0 || game(Player1.x + 1)(Player1.y) == 7) Player1.x += 1
         }
         if (e.getKeyCode == KeyEvent.VK_SHIFT) {
           Player1.bomb()
@@ -486,16 +488,16 @@ object MainGame extends App {
 
         game(Player2.x)(Player2.y) = 0
         if (e.getKeyCode == KeyEvent.VK_W) {
-          if (game(Player2.x)(Player2.y - 1) != 1 && game(Player2.x)(Player2.y - 1) != 2) Player2.y -= 1
+          if (game(Player2.x)(Player2.y - 1) == 0 || game(Player2.x)(Player2.y - 1) == 7) Player2.y -= 1
         }
         if (e.getKeyCode == KeyEvent.VK_S) {
-          if (game(Player2.x)(Player2.y + 1) != 1 && game(Player2.x)(Player2.y + 1) != 2) Player2.y += 1
+          if (game(Player2.x)(Player2.y + 1) == 0 || game(Player2.x)(Player2.y + 1) == 7) Player2.y += 1
         }
         if (e.getKeyCode == KeyEvent.VK_A) {
-          if (game(Player2.x - 1)(Player2.y) != 1 && game(Player2.x - 1)(Player2.y) != 2) Player2.x -= 1
+          if (game(Player2.x - 1)(Player2.y) == 0 || game(Player2.x - 1)(Player2.y) == 7) Player2.x -= 1
         }
         if (e.getKeyCode == KeyEvent.VK_D) {
-          if (game(Player2.x + 1)(Player2.y) != 1 && game(Player2.x + 1)(Player2.y) != 2) Player2.x += 1
+          if (game(Player2.x + 1)(Player2.y) == 0 || game(Player2.x + 1)(Player2.y) == 7) Player2.x += 1
         }
         if (e.getKeyCode == KeyEvent.VK_E) {
           Player2.bomb()
