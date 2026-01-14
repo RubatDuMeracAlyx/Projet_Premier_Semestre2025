@@ -1,3 +1,5 @@
+#Bomber-Man
+
 notre jeu est un bomber-man
 le but est donc pour chaque joueur de casser les caisses afin d'ateindre l'autre joueur et le faire exploser.
 
