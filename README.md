@@ -1,4 +1,4 @@
-#**!!! A FAIRE AVANT DE JOUER !!!**
+# **!!! A FAIRE AVANT DE JOUER !!!**
 
 Après avoir installé le projet dans IntelliJ, il faut impérativement pour jouer : 
 
@@ -6,7 +6,7 @@ Après avoir installé le projet dans IntelliJ, il faut impérativement pour jou
   - **[clic droit]** sur le dossier **[src]** et ensuite **"ajouter comme source"**
   - Redéclarer fungraphics comme **library** (clic droit sur le fichier puis -> "Add as a Library") 
 
-#**BOMBER MAN**
+# **BOMBER MAN**
 
 // Pour lancer le jeu : Placer vous dans le document **"maze_game.scala"** puis faites **Run**.
 
