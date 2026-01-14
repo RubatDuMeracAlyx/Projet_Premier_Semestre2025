@@ -15,6 +15,8 @@ Après avoir installé le projet dans IntelliJ, il faut impérativement pour jou
 Notre jeu est un Bomber-man.
 Bomber-man ce joue en 1 contre 1 sur le même écran, ou les 2 joueurs s'affronte sur un carte dont ils peuvent choisir la taille et le zoom.
 Le but ? Faire exploser son adversaire ! Pour ce faire vous devrez détruire les caisses qui vous sépare et user de faintes afin de surpasser votre adversaire.
+<img width="447" height="299" alt="game-settingscreen" src="https://github.com/user-attachments/assets/7adcf7e5-5e4d-4ff6-a86a-b64fa81fd8fb" />
+<img width="703" height="436" alt="game-mainscreen" src="https://github.com/user-attachments/assets/3d63c1c8-d38d-4426-8c97-d86f50a067c3" />
 
   ## 2. **Mode d'emplois**
 
